@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" 
+	 xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <beans:property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+    <beans:property name="url" value="jdbc:mysql://localhost:3306/priyatest"/>
+    <beans:property name="username" value="root"/>
+    <beans:property name="password" value="priya1234"/>   
+</beans:bean>
+	
+	<http auto-config="true">
+		<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		<form-login login-page="/admin-login" authentication-failure-url="/logFail" login-processing-url="/adminLogin" default-target-url="/admin" always-use-default-target="true" username-parameter="email" password-parameter="password"/>
+		<csrf disabled="true"/>
+		<logout invalidate-session="true" logout-success-url="/admin" logout-url="/logout" />
+	</http>
+	
+	<!-- Select users and user_roles from database -->
+	<authentication-manager>
+	  <authentication-provider>
+		 <user-service>
+		        <user name="admin@gmail.com" password="{noop}Test@1234" authorities="ROLE_ADMIN" />
+		        <user name="admin2@gmail.com" password="{noop}priya@345" authorities="ROLE_ADMIN" />
+		    </user-service>	
+	  </authentication-provider>
+	</authentication-manager>
+
+</beans:beans>
